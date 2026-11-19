@@ -1,0 +1,447 @@
+{
+  "label": "调度、资源商与结算的本地接口",
+  "routes": [
+    {
+      "method": "GET",
+      "path": "/dispatch/windows",
+      "note": "秒级时间用当天当地时刻。区间左闭右开，priority 大者优先，eligibleOutlets 为可结算的物理出口。",
+      "steps": [
+        [
+          {
+            "id": "Q-8",
+            "priority": 30,
+            "window": [
+              "15:00:00",
+              "16:00:00"
+            ],
+            "eligibleOutlets": [
+              "M54"
+            ]
+          },
+          {
+            "id": "Q-10",
+            "priority": 15,
+            "window": [
+              "15:30:00",
+              "16:15:00"
+            ],
+            "eligibleOutlets": [
+              "M54",
+              "M76"
+            ]
+          }
+        ],
+        [
+          {
+            "id": "Q-8",
+            "priority": 30,
+            "window": [
+              "15:00:00",
+              "16:00:00"
+            ],
+            "withdrawn": [
+              [
+                "15:40:00",
+                "15:50:00"
+              ]
+            ],
+            "eligibleOutlets": [
+              "M54"
+            ]
+          },
+          {
+            "id": "Q-10",
+            "priority": 15,
+            "window": [
+              "15:30:00",
+              "16:15:00"
+            ],
+            "eligibleOutlets": [
+              "M54",
+              "M76"
+            ]
+          }
+        ]
+      ],
+      "status": 200,
+      "kind": "json"
+    },
+    {
+      "method": "GET",
+      "path": "/partners/outlets",
+      "note": "相同 outlet 表示同一物理出口。parent 和 independent 指明从表是否另行计量。",
+      "steps": [
+        [
+          {
+            "partner": "A7",
+            "site": "ST18",
+            "outlet": "M54",
+            "meter": "U5",
+            "valid": [
+              "15:00",
+              "16:15"
+            ],
+            "independent": true
+          },
+          {
+            "partner": "B4",
+            "site": "R22",
+            "outlet": "M54",
+            "meter": "Y3",
+            "valid": [
+              "15:30",
+              "16:15"
+            ],
+            "parent": "U5",
+            "independent": false
+          },
+          {
+            "partner": "B4",
+            "site": "R20",
+            "outlet": "M76",
+            "meter": "Y6",
+            "valid": [
+              "15:00",
+              "16:15"
+            ],
+            "independent": true
+          }
+        ],
+        [
+          {
+            "partner": "A7",
+            "site": "ST18",
+            "outlet": "M54",
+            "meter": "U5",
+            "valid": [
+              "15:00",
+              "16:15"
+            ],
+            "independent": true
+          },
+          {
+            "partner": "B4",
+            "site": "R22",
+            "outlet": "M54",
+            "meter": "Y3",
+            "valid": [
+              "15:30",
+              "16:15"
+            ],
+            "parent": "U5",
+            "independent": false
+          },
+          {
+            "partner": "B4",
+            "site": "R20",
+            "outlet": "M76",
+            "meter": "Y6",
+            "valid": [
+              "15:00",
+              "16:15"
+            ],
+            "independent": true
+          }
+        ]
+      ],
+      "status": 200,
+      "kind": "json"
+    },
+    {
+      "method": "GET",
+      "path": "/partners/access",
+      "note": "可领取范围按出口及起止时间。hold 表示暂缓，另有 retryAfterSeconds。",
+      "steps": [
+        [
+          {
+            "outlet": "M54",
+            "openFrom": "15:00",
+            "openUntil": "15:50"
+          },
+          {
+            "outlet": "M76",
+            "openFrom": "15:00",
+            "openUntil": "16:00",
+            "hold": [
+              "16:00",
+              "16:15"
+            ],
+            "retryAfterSeconds": 15
+          }
+        ],
+        [
+          {
+            "outlet": "M54",
+            "openFrom": "15:00",
+            "openUntil": "16:15"
+          },
+          {
+            "outlet": "M76",
+            "openFrom": "15:00",
+            "openUntil": "16:15"
+          }
+        ]
+      ],
+      "status": 200,
+      "kind": "json"
+    },
+    {
+      "method": "GET",
+      "path": "/partners/samples",
+      "note": "quantity 为区间千瓦时，counter 为累计千瓦时。resetAt 的 before、after 为复位时读数。",
+      "steps": [
+        [
+          {
+            "outlet": "M54",
+            "meter": "U5",
+            "revision": 1,
+            "counter": [
+              [
+                "15:00",
+                100
+              ],
+              [
+                "15:30",
+                114
+              ],
+              [
+                "15:40",
+                118
+              ],
+              [
+                "15:50",
+                122
+              ]
+            ]
+          },
+          {
+            "outlet": "M76",
+            "meter": "Y6",
+            "revision": 1,
+            "quantity": [
+              [
+                "15:30",
+                "16:00",
+                13
+              ]
+            ]
+          }
+        ],
+        [
+          {
+            "outlet": "M54",
+            "meter": "U5",
+            "revision": 2,
+            "counter": [
+              [
+                "15:00",
+                100
+              ],
+              [
+                "15:30",
+                114
+              ],
+              [
+                "15:40",
+                118
+              ],
+              [
+                "15:45",
+                3
+              ],
+              [
+                "15:50",
+                5
+              ],
+              [
+                "16:00",
+                9
+              ],
+              [
+                "16:15",
+                14
+              ]
+            ],
+            "resetAt": {
+              "time": "15:45",
+              "before": 120,
+              "after": 3
+            }
+          },
+          {
+            "outlet": "M76",
+            "meter": "Y6",
+            "revision": 2,
+            "quantity": [
+              [
+                "15:30",
+                "16:00",
+                13
+              ],
+              [
+                "16:00",
+                "16:15",
+                6
+              ]
+            ]
+          }
+        ]
+      ],
+      "status": 200,
+      "kind": "json"
+    },
+    {
+      "method": "GET",
+      "path": "/dispatch/baselines",
+      "note": "基线条目来自调度方，出口与区间适用范围随条目提供。",
+      "steps": [
+        [
+          {
+            "outlet": "M54",
+            "revision": 1,
+            "values": [
+              [
+                "15:00",
+                "15:30",
+                20
+              ],
+              [
+                "15:30",
+                "15:40",
+                8
+              ],
+              [
+                "15:40",
+                "15:50",
+                9
+              ],
+              [
+                "15:50",
+                "16:00",
+                8
+              ],
+              [
+                "16:00",
+                "16:15",
+                10
+              ]
+            ]
+          },
+          {
+            "outlet": "M76",
+            "revision": 1,
+            "values": [
+              [
+                "15:30",
+                "16:00",
+                17
+              ],
+              [
+                "16:00",
+                "16:15",
+                8
+              ]
+            ]
+          }
+        ],
+        [
+          {
+            "outlet": "M54",
+            "revision": 1,
+            "values": [
+              [
+                "15:00",
+                "15:30",
+                20
+              ],
+              [
+                "15:30",
+                "15:40",
+                8
+              ],
+              [
+                "15:40",
+                "15:50",
+                9
+              ],
+              [
+                "15:50",
+                "16:00",
+                8
+              ],
+              [
+                "16:00",
+                "16:15",
+                10
+              ]
+            ]
+          },
+          {
+            "outlet": "M76",
+            "revision": 1,
+            "values": [
+              [
+                "15:30",
+                "16:00",
+                17
+              ],
+              [
+                "16:00",
+                "16:15",
+                8
+              ]
+            ]
+          }
+        ]
+      ],
+      "status": 200,
+      "kind": "json"
+    },
+    {
+      "method": "POST",
+      "path": "/finance/receipts",
+      "note": "受理时接收 requestKey、window、dispatch、netKwh。冲正另带 priorReceipt。",
+      "steps": [
+        {
+          "fields": [
+            "requestKey",
+            "window",
+            "dispatch",
+            "netKwh"
+          ],
+          "pendingUntil": 0,
+          "response": "receipt"
+        },
+        {
+          "fields": [
+            "requestKey",
+            "window",
+            "dispatch",
+            "netKwh"
+          ],
+          "pendingUntil": 0,
+          "response": "receipt"
+        }
+      ],
+      "status": 200,
+      "kind": "json"
+    },
+    {
+      "method": "GET",
+      "path": "/finance/receipts",
+      "note": "凭原 requestKey 核对结算受理。",
+      "steps": [
+        {
+          "lookup": "receipt",
+          "key": "requestKey"
+        },
+        {
+          "lookup": "receipt",
+          "key": "requestKey"
+        }
+      ],
+      "status": 200,
+      "kind": "json"
+    }
+  ]
+}
