@@ -11,6 +11,12 @@
 `requests/example.json` 是业务人员提交的样例请求。
 启动后处于演练阶段 0。可向 `POST /replay/phase` 发送 JSON `{"phase":1}` 切换到下一批资料。阶段切换不会清除此前受理的经办号。
 
+## 凭据流程
+
+`npm run flow` 启动凭据流程服务（默认 `http://127.0.0.1:3200`）：调度员视图
+可点开待补采范围，财务视图可领走有根据的确认或冲正凭据。详见
+[`flow/README.md`](flow/README.md)。
+
 ## 来源接口
 
 - `GET /dispatch/windows` 秒级时间用当天当地时刻。区间左闭右开，priority 大者优先，eligibleOutlets 为可结算的物理出口。

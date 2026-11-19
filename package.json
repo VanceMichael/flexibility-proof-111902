@@ -8,6 +8,7 @@
   "type": "module",
   "scripts": {
     "test": "node --test",
-    "start": "node start.mjs"
+    "start": "node start.mjs",
+    "flow": "node flow/server.mjs"
   }
 }
